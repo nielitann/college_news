@@ -5,6 +5,9 @@ import datetime
 import os
 import uuid
 from auth import Auth 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 db = Database()
 app = Flask(__name__)
