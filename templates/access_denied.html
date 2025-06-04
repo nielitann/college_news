@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доступ запрещен</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .access-denied-container {
+            text-align: center;
+            padding: 40px;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+        }
+        
+        .access-denied-title {
+            color: #d32f2f;
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        
+        .access-denied-message {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        
+        .login-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #1976d2;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+        
+        .login-button:hover {
+            background-color: #1565c0;
+        }
+        
+        .warning-icon {
+            font-size: 80px;
+            color: #d32f2f;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="access-denied-container">
+        <div class="warning-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h1 class="access-denied-title">Доступ запрещен!</h1>
+        <p class="access-denied-message">
+            Отказано в доступе. Для входа в админ-панель нужно авторизоваться.
+        </p>
+        <a href="/login" class="login-button">Перейти к авторизации</a>
+    </div>
+
+    <!-- Подключаем Font Awesome для иконки -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>

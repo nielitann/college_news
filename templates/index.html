@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новости колледжа</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #007BFF;
+            --secondary-color: #0056b3;
+            --text-color: #333;
+            --bg-color: #f4f4f4;
+            --card-bg: #fff;
+            --border-color: #ddd;
+            --footer-bg: #007BFF;
+        }
+
+        body.dark {
+            --text-color: #f4f4f4;
+            --bg-color: #222;
+            --card-bg: #444;
+            --border-color: #555;
+            --footer-bg: #0056b3;
+            --primary-color: #0056b3;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Навигация */
+        .navbar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .search-container {
+            display: flex;
+            margin-left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .search-container input {
+            padding: 8px 12px;
+            border: none;
+            background: transparent;
+            color: white;
+            width: 200px;
+        }
+
+        .search-container input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-container button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .theme-toggle {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 15px;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Герой-секция */
+        .hero {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            padding: 30px;
+        }
+
+        .hero-category {
+            display: inline-block;
+            background: var(--primary-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .hero-title {
+            font-size: 2.2rem;
+            margin: 10px 0;
+        }
+
+        .hero-button {
+            display: inline-block;
+            background: white;
+            color: var(--primary-color);
+            padding: 10px 25px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: transform 0.2s;
+        }
+
+        .hero-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Основной контент */
+        .main-content {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .content-primary {
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 300px;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .sort-select {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            margin-left: auto;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .news-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .news-card.featured {
+            grid-column: span 2;
+        }
+
+        .news-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-category {
+            color: var(--primary-color);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin: 0 0 12px;
+            line-height: 1.4;
+        }
+
+        .card-excerpt {
+            margin-bottom: 15px;
+            color: var(--text-color);
+            opacity: 0.9;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .hashtag {
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-color);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .read-more {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Боковая панель */
+        .sidebar-section {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .event-item {
+            padding: 12px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .event-date {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .event-title {
+            margin: 5px 0;
+        }
+
+        .popular-news {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .popular-item {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .popular-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .popular-image {
+            width: 80px;
+            height: 60px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+
+        .popular-content {
+            flex: 1;
+        }
+
+        .popular-title {
+            font-size: 0.95rem;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .subscribe-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .subscribe-form input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .subscribe-form button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            font-size: 1.8rem;
+        }
+
+        .social-links a {
+            color: var(--primary-color);
+            transition: transform 0.2s;
+        }
+
+        .social-links a:hover {
+            transform: translateY(-3px);
+        }
+
+        .quick-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .quick-links li {
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .quick-links li:last-child {
+            border-bottom: none;
+        }
+
+        .quick-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s;
+        }
+
+        .quick-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .view-all {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Футер */
+        footer {
+            background-color: var(--footer-bg);
+            color: white;
+            padding: 40px 0 0;
+            transition: background-color 0.3s;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-title {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .map-container {
+            position: relative;
+            height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .map-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .map-marker {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -100%);
+            width: 30px;
+            height: 30px;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .map-info {
+            position: absolute;
+            background: var(--card-bg);
+            color: var(--text-color);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+            display: none;
+            z-index: 100;
+            max-width: 250px;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 992px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .news-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .news-card.featured {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                height: 300px;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--primary-color);
+                flex-direction: column;
+                padding: 15px;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .search-container {
+                margin: 15px 0 0;
+                width: 100%;
+            }
+            
+            .search-container input {
+                width: 100%;
+            }
+            
+            .navbar-content {
+                flex-wrap: wrap;
+            }
+            
+            .theme-toggle {
+                margin-left: auto;
+            }
+            
+            .filters {
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero {
+                height: 250px;
+            }
+            
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .news-card {
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .news-card:nth-child(1) { animation-delay: 0.1s; }
+        .news-card:nth-child(2) { animation-delay: 0.2s; }
+        .news-card:nth-child(3) { animation-delay: 0.3s; }
+        .news-card:nth-child(4) { animation-delay: 0.4s; }
+        .news-card:nth-child(5) { animation-delay: 0.5s; }
+        
+        /* Стили для модального окна */
+        .news-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            max-width: 800px;
+            margin: 40px auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            position: relative;
+        }
+        
+        .modal-media {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 10;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .modal-category {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .modal-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        
+        .modal-text {
+            line-height: 1.8;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-color);
+            padding: 20px 30px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+        
+        .modal-hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        
+        .modal-hashtag {
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--primary-color);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .media-gallery {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .gallery-item {
+            width: 120px;
+            height: 90px;
+            border-radius: 5px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .gallery-item img, .gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="/" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Ногинский Колледж</span>
+            </a>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="/about">О нас</a>
+                <a href="/abiturient">Абитуриенту</a>
+                <a href="/admission">Приемная комиссия</a>
+                <a href="/location">Местоположение</a>
+                <a href="/login" id="login-link">Вход</a>
+                <a href="/admin" id="admin-link" style="display: none;">Админ</a>
+                
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Поиск новостей..." onkeyup="handleSearch(event)">
+                    <button onclick="performSearch()"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+            
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Герой-секция -->
+        <section class="hero" id="heroSection">
+            <!-- Динамически загружается через JS -->
+        </section>
+
+        <!-- Основной контент -->
+        <div class="main-content">
+            <div class="content-primary">
+                <!-- Фильтры и сортировка -->
+                <div class="filters">
+                    <button class="filter-btn active" data-category="all" onclick="filterByCategory('all')">Все новости</button>
+                    <button class="filter-btn" data-category="academic" onclick="filterByCategory('academic')">Академические</button>
+                    <button class="filter-btn" data-category="student_life" onclick="filterByCategory('student_life')">Студенческая жизнь</button>
+                    <button class="filter-btn" data-category="sport" onclick="filterByCategory('sport')">Спорт</button>
+                    <button class="filter-btn" data-category="culture" onclick="filterByCategory('culture')">Культура</button>
+                    <button class="filter-btn" data-category="research" onclick="filterByCategory('research')">Исследования</button>
+                    <button class="filter-btn" data-category="announcements" onclick="filterByCategory('announcements')">Объявления</button>
+                    
+                    <select class="sort-select" onchange="sortNews(this.value)">
+                        <option value="newest">Сначала новые</option>
+                        <option value="oldest">Сначала старые</option>
+                    </select>
+                </div>
+                
+                <!-- Лента новостей -->
+                <div class="news-grid" id="newsFeed">
+                    <!-- Новости будут загружены через JS -->
+                </div>
+            </div>
+            
+            <!-- Боковая панель -->
+            <div class="sidebar">
+                <!-- Ближайшие мероприятия -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Ближайшие мероприятия</h3>
+                    <div id="events-container">
+                        <!-- Сюда загружаются мероприятия -->
+                    </div>
+                    <a href="#" class="view-all">Все мероприятия →</a>
+                </div>
+                
+                <!-- Популярные новости -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Популярные новости</h3>
+                    <div class="popular-news" id="popularNews">
+                        <!-- Динамически загружается через JS -->
+                    </div>
+                </div>
+                
+                <!-- Подписка -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Подписаться на новости</h3>
+                    <form class="subscribe-form">
+                        <input type="email" placeholder="Ваш email" required>
+                        <button type="submit">Подписаться</button>
+                    </form>
+                    <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.8;">Будьте в курсе всех событий колледжа</p>
+                </div>
+                
+                <!-- Социальные сети -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Мы в соцсетях</h3>
+                    <div class="social-links">
+                        <a href="#" aria-label="ВКонтакте"><i class="fab fa-vk"></i></a>
+                        <a href="#" aria-label="Telegram"><i class="fab fa-telegram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="Одноклассники"><i class="fab fa-odnoklassniki"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Быстрые ссылки -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Быстрые ссылки</h3>
+                    <ul class="quick-links">
+                        <li><a href="/schedule"><i class="fas fa-calendar-alt"></i> Расписание</a></li>
+                        <li><a href="/eios"><i class="fas fa-laptop"></i> ЭИОС</a></li>
+                        <li><a href="/library"><i class="fas fa-book"></i> Библиотека</a></li>
+                        <li><a href="/admission"><i class="fas fa-file-alt"></i> Приемная комиссия</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Футер -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3 class="footer-title">Контакты</h3>
+                <p><strong>Адрес:</strong> г. Ногинск, ул. Советская, д. 125</p>
+                <p><strong>Телефон:</strong> +7 (496) 514-12-34</p>
+                <p><strong>Email:</strong> info@nogkolledzh.ru</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3 class="footer-title">Приемная комиссия</h3>
+                <p><strong>Часы работы:</strong> Пн-Пт: 9:00-17:00, Сб: 10:00-15:00</p>
+                <p><strong>Телефон:</strong> +7 (496) 514-56-78</p>
+                <p><strong>Email:</strong> priem@nogkolledzh.ru</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3 class="footer-title">Мы на карте</h3>
+                <div class="map-container">
+                    <img src="https://static-maps.yandex.ru/1.x/?ll=38.4375,55.8518&z=16&size=600,200&l=map&pt=38.4375,55.8518,pm2blm" 
+                         alt="Карта расположения колледжа" class="map-image">
+                    <div class="map-marker" onclick="showMapInfo()">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div id="map-info" class="map-info"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Ногинский колледж. Все права защищены.</p>
+        </div>
+    </footer>
+    
+    <!-- Модальное окно для просмотра новости -->
+    <div id="newsModal" class="news-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div id="modalMainMedia"></div>
+                <div class="modal-close" onclick="closeNewsModal()">&times;</div>
+            </div>
+            <div class="modal-body">
+                <div id="modalCategory" class="modal-category"></div>
+                <h2 id="modalTitle" class="modal-title"></h2>
+                <div id="modalText" class="modal-text"></div>
+                
+                <div id="modalHashtags" class="modal-hashtags"></div>
+                
+                <div id="mediaGallery" class="media-gallery"></div>
+            </div>
+            <div class="modal-footer">
+                <div id="modalDate"></div>
+                <div id="modalCategoryName"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Элементы управления
+            const themeToggle = document.getElementById('themeToggle');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const navLinks = document.getElementById('navLinks');
+            const body = document.body;
+            
+            // Переключение темы
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
+            
+            // Мобильное меню
+            if (mobileMenuBtn && navLinks) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+            }
+            
+            // Загрузка новостей
+            loadNews();
+            
+            // Загрузка мероприятий
+            loadEvents();
+            
+            // Загрузка важного события
+            loadFeaturedNews();
+            
+            // Загрузка популярных новостей
+            loadPopularNews();
+            
+            // Инициализация карты
+            initMap();
+            
+            // Функция переключения темы
+            function toggleTheme() {
+                body.classList.toggle('dark');
+                const icon = themeToggle.querySelector('i');
+                if (body.classList.contains('dark')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+                
+                // Сохранение темы в localStorage
+                const theme = body.classList.contains('dark') ? 'dark' : 'light';
+                localStorage.setItem('theme', theme);
+            }
+            
+            // Восстановление темы при загрузке
+            if (localStorage.getItem('theme') === 'dark') {
+                body.classList.add('dark');
+                const icon = themeToggle.querySelector('i');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        });
+
+        function initMap() {
+            // Карта уже реализована в разметке
+        }
+
+        function showMapInfo() {
+            const info = document.getElementById('map-info');
+            if (info) {
+                info.innerHTML = `
+                    <strong>Ногинский колледж</strong><br>
+                    г. Ногинск, ул. Советская, д. 125<br>
+                    Телефон: +7 (496) 514-12-34
+                `;
+                info.style.display = 'block';
+                
+                // Автоматическое скрытие через 5 секунд
+                setTimeout(() => {
+                    info.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        // Функция загрузки важного события
+        async function loadFeaturedNews() {
+            try {
+                const response = await fetch('/api/get_featured_news');
+                if (!response.ok) return;
+                
+                const featuredNews = await response.json();
+                const heroSection = document.getElementById('heroSection');
+                
+                if (featuredNews.length === 0) {
+                    // Заглушка, если нет важных событий
+                    heroSection.innerHTML = `
+                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                             alt="Главное событие колледжа" class="hero-image">
+                        <div class="hero-content">
+                            <span class="hero-category">Важное событие</span>
+                            <h1 class="hero-title">День открытых дверей 2024</h1>
+                            <p>Приглашаем будущих студентов и их родителей на ежегодный День открытых дверей!</p>
+                            <a href="#" class="hero-button">Узнать подробнее</a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const news = featuredNews[0];
+                let mediaHTML = '';
+                if (news.media_urls && news.media_urls.length > 0) {
+                    const firstMedia = news.media_urls[0];
+                    if (firstMedia.match(/\.(jpg|jpeg|png|gif)$/i)) {
+                        mediaHTML = `<img src="/static/uploads/${firstMedia}" alt="${news.title}" class="hero-image">`;
+                    } else if (firstMedia.match(/\.(mp4|webm|ogg)$/i)) {
+                        mediaHTML = `<video src="/static/uploads/${firstMedia}" class="hero-image" autoplay muted loop></video>`;
+                    }
+                } else {
+                    mediaHTML = `<img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                         alt="${news.title}" class="hero-image">`;
+                }
+                
+                heroSection.innerHTML = `
+                    ${mediaHTML}
+                    <div class="hero-content">
+                        <span class="hero-category">${getCategoryName(news.category)}</span>
+                        <h1 class="hero-title">${news.title}</h1>
+                        <p>${news.content.substring(0, 150)}${news.content.length > 150 ? '...' : ''}</p>
+                        <a href="#" class="hero-button" onclick="openNewsModal(${news.id}); return false;">Читать далее</a>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Ошибка загрузки важного события:', error);
+            }
+        }
+        
+        // Функция загрузки популярных новостей
+        async function loadPopularNews() {
+            try {
+                const response = await fetch('/api/get_popular_news');
+                if (!response.ok) return;
+                
+                const newsList = await response.json();
+                const container = document.getElementById('popularNews');
+                container.innerHTML = '';
+                
+                if (newsList.length === 0) {
+                    container.innerHTML = '<p>Нет популярных новостей</p>';
+                    return;
+                }
+                
+                newsList.forEach(news => {
+                    let mediaHTML = '';
+                    if (news.media_urls && news.media_urls.length > 0) {
+                        const firstMedia = news.media_urls[0];
+                        mediaHTML = `<img src="/static/uploads/${firstMedia}" alt="${news.title}" class="popular-image">`;
+                    } else {
+                        mediaHTML = `<img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" 
+                             alt="${news.title}" class="popular-image">`;
+                    }
+                    
+                    const newsElement = document.createElement('div');
+                    newsElement.className = 'popular-item';
+                    newsElement.innerHTML = `
+                        ${mediaHTML}
+                        <div class="popular-content">
+                            <h4 class="popular-title">${news.title}</h4>
+                            <div class="card-footer">
+                                <span>${news.created_at}</span>
+                            </div>
+                        </div>
+                    `;
+                    newsElement.addEventListener('click', () => openNewsModal(news.id));
+                    container.appendChild(newsElement);
+                });
+            } catch (error) {
+                console.error('Ошибка загрузки популярных новостей:', error);
+            }
+        }
+        
+        // Функция загрузки мероприятий
+        async function loadEvents() {
+            try {
+                const response = await fetch('/api/get_events');
+                if (!response.ok) throw new Error('Ошибка сервера');
+                
+                const events = await response.json();
+                const container = document.getElementById('events-container');
+                container.innerHTML = '';
+                
+                if (events.length === 0) {
+                    container.innerHTML = '<p>Нет предстоящих мероприятий</p>';
+                    return;
+                }
+                
+                events.slice(0, 3).forEach(event => { // Показываем первые 3
+                    const eventElement = document.createElement('div');
+                    eventElement.className = 'event-item';
+                    eventElement.innerHTML = `
+                        <div class="event-date">${formatDate(event.date)}</div>
+                        <h4 class="event-title">${event.title}</h4>
+                        <div class="event-location">${event.location}</div>
+                    `;
+                    container.appendChild(eventElement);
+                });
+            } catch (error) {
+                console.error('Ошибка загрузки мероприятий:', error);
+            }
+        }
+        
+        // Функция форматирования даты (без времени)
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const options = { day: 'numeric', month: 'long' };
+            return date.toLocaleDateString('ru-RU', options);
+        }
+        
+        // Функция загрузки новостей
+        async function loadNews(category = 'all', searchQuery = '') {
+            try {
+                // Формируем URL с параметрами
+                let url = `/api/get_all_news?category=${category}`;
+                if (searchQuery) {
+                    url += `&search=${encodeURIComponent(searchQuery)}`;
+                }
+
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Ошибка сервера');
+                
+                const news = await response.json();
+                const container = document.getElementById('newsFeed');
+                container.innerHTML = '';
+                
+                if (news.length === 0) {
+                    container.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:40px;">Новостей по вашему запросу не найдено.</p>';
+                    return;
+                }
+                
+                news.forEach(item => {
+                    let mediaHTML = '';
+                    if (item.media_urls && item.media_urls.length > 0) {
+                        const firstMedia = item.media_urls[0];
+                        if (firstMedia.match(/\.(jpg|jpeg|png|gif)$/i)) {
+                            mediaHTML = `<img src="/static/uploads/${firstMedia}" alt="${item.title}" class="news-image">`;
+                        } else if (firstMedia.match(/\.(mp4|webm|ogg)$/i)) {
+                            mediaHTML = `<video src="/static/uploads/${firstMedia}" class="news-image" muted></video>`;
+                        }
+                    } else {
+                        mediaHTML = `<img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                             alt="${item.title}" class="news-image">`;
+                    }
+                    
+                    const newsCard = document.createElement('div');
+                    newsCard.className = `news-card ${item.is_featured ? 'featured' : ''}`;
+                    newsCard.dataset.id = item.id;
+                    newsCard.dataset.date = item.created_at;
+                    
+                    newsCard.innerHTML = `
+                        ${mediaHTML}
+                        <div class="card-content">
+                            <div class="card-category">${getCategoryName(item.category)}</div>
+                            <h3 class="card-title">${item.title}</h3>
+                            <p class="card-excerpt">${item.content.substring(0, 100)}${item.content.length > 100 ? '...' : ''}</p>
+                            ${item.hashtags ? `
+                                <div class="hashtags">
+                                    ${item.hashtags.split(' ').map(tag => 
+                                        tag.trim() ? `<span class="hashtag">${tag}</span>` : ''
+                                    ).join('')}
+                                </div>
+                            ` : ''}
+                            <div class="card-footer">
+                                <span>${item.created_at}</span>
+                                <a href="#" class="read-more" onclick="openNewsModal(${item.id}); return false;">Читать далее <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Добавляем обработчик клика на всю карточку
+                    newsCard.addEventListener('click', () => openNewsModal(item.id));
+                    
+                    container.appendChild(newsCard);
+                });
+            } catch (error) {
+                console.error('Ошибка загрузки новостей:', error);
+                const container = document.getElementById('newsFeed');
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ff6b6b;"></i>
+                        <h3>Не удалось загрузить новости</h3>
+                        <p>Попробуйте обновить страницу позже</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Функция для получения названия категории
+        function getCategoryName(category) {
+            const categories = {
+                'general': 'Общие',
+                'academic': 'Академические',
+                'student_life': 'Студенческая жизнь',
+                'sport': 'Спорт',
+                'culture': 'Культура',
+                'research': 'Исследования',
+                'announcements': 'Объявления'
+            };
+            return categories[category] || category;
+        }
+        
+        // Функция для открытия модального окна с новостью
+        async function openNewsModal(newsId) {
+            try {
+                const response = await fetch(`/api/get_news_by_id/${newsId}`);
+                if (!response.ok) throw new Error('Ошибка загрузки новости');
+                
+                const newsItem = await response.json();
+                
+                // Заполняем модальное окно
+                document.getElementById('modalTitle').textContent = newsItem.title;
+                document.getElementById('modalText').textContent = newsItem.content;
+                document.getElementById('modalCategory').textContent = getCategoryName(newsItem.category);
+                document.getElementById('modalCategoryName').textContent = getCategoryName(newsItem.category);
+                document.getElementById('modalDate').textContent = newsItem.created_at;
+                
+                // Хэштеги
+                const hashtagsContainer = document.getElementById('modalHashtags');
+                hashtagsContainer.innerHTML = '';
+                if (newsItem.hashtags) {
+                    newsItem.hashtags.split(' ').forEach(tag => {
+                        if (tag.trim()) {
+                            const span = document.createElement('span');
+                            span.className = 'modal-hashtag';
+                            span.textContent = '#' + tag;
+                            hashtagsContainer.appendChild(span);
+                        }
+                    });
+                }
+                
+                // Медиа
+                const mediaContainer = document.getElementById('modalMainMedia');
+                const galleryContainer = document.getElementById('mediaGallery');
+                mediaContainer.innerHTML = '';
+                galleryContainer.innerHTML = '';
+                
+                if (newsItem.media_urls && newsItem.media_urls.length > 0) {
+                    // Главное медиа (первый элемент)
+                    const firstMedia = newsItem.media_urls[0];
+                    mediaContainer.appendChild(createMediaElement(firstMedia, true));
+                    
+                    // Галерея остальных медиа
+                    newsItem.media_urls.forEach((media, index) => {
+                        if (index > 0) {
+                            const galleryItem = createMediaElement(media, false);
+                            galleryItem.classList.add('gallery-item');
+                            galleryItem.onclick = () => {
+                                mediaContainer.innerHTML = '';
+                                mediaContainer.appendChild(createMediaElement(media, true));
+                            };
+                            galleryContainer.appendChild(galleryItem);
+                        }
+                    });
+                }
+                
+                // Показываем модальное окно
+                document.getElementById('newsModal').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                
+            } catch (error) {
+                console.error('Ошибка открытия новости:', error);
+                alert('Не удалось загрузить новость');
+            }
+        }
+        
+        // Функция для создания медиа-элемента
+        function createMediaElement(mediaUrl, isMain = false) {
+            const container = document.createElement('div');
+            container.className = isMain ? 'modal-media-container' : '';
+            
+            if (mediaUrl.match(/\.(jpg|jpeg|png|gif)$/i)) {
+                const img = document.createElement('img');
+                img.src = `/static/uploads/${mediaUrl}`;
+                img.alt = 'Новостное изображение';
+                img.className = isMain ? 'modal-media' : '';
+                container.appendChild(img);
+            } 
+            else if (mediaUrl.match(/\.(mp4|webm|ogg)$/i)) {
+                const video = document.createElement('video');
+                video.src = `/static/uploads/${mediaUrl}`;
+                video.controls = true;
+                video.className = isMain ? 'modal-media' : '';
+                if (isMain) video.autoplay = true;
+                container.appendChild(video);
+            }
+            
+            return container;
+        }
+        
+        // Функция закрытия модального окна
+        function closeNewsModal() {
+            document.getElementById('newsModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            
+            // Останавливаем все видео
+            document.querySelectorAll('video').forEach(video => {
+                video.pause();
+            });
+        }
+        
+        // Закрытие при клике вне окна
+        window.addEventListener('click', (event) => {
+            if (event.target.id === 'newsModal') {
+                closeNewsModal();
+            }
+        });
+        
+        // ========== ФУНКЦИИ ДЛЯ ПОИСКА И ФИЛЬТРАЦИИ ==========
+        
+        function handleSearch(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        }
+        
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchQuery = searchInput.value.trim();
+            
+            // Получаем активную категорию
+            const activeBtn = document.querySelector('.filter-btn.active');
+            const category = activeBtn ? activeBtn.dataset.category : 'all';
+            
+            loadNews(category, searchQuery);
+        }
+        
+        function filterByCategory(category) {
+            // Убираем активный класс со всех кнопок
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Добавляем активный класс текущей кнопке
+            event.currentTarget.classList.add('active');
+            
+            const searchInput = document.getElementById('searchInput');
+            const searchQuery = searchInput.value.trim();
+            
+            loadNews(category, searchQuery);
+        }
+        
+        function sortNews(sortType) {
+            const container = document.getElementById('newsFeed');
+            const newsCards = Array.from(container.querySelectorAll('.news-card'));
+            
+            newsCards.sort((a, b) => {
+                const dateStrA = a.dataset.date;
+                const dateStrB = b.dataset.date;
+                const dateA = parseDate(dateStrA);
+                const dateB = parseDate(dateStrB);
+                
+                if (sortType === 'newest') {
+                    return dateB - dateA;
+                } else if (sortType === 'oldest') {
+                    return dateA - dateB;
+                }
+                return 0;
+            });
+            
+            container.innerHTML = '';
+            newsCards.forEach(card => container.appendChild(card));
+        }
+        
+        function parseDate(dateStr) {
+            const parts = dateStr.split('.');
+            if (parts.length === 3) {
+                return new Date(parts[2], parts[1] - 1, parts[0]);
+            }
+            return new Date();
+        }
+    </script>
+</body>
+</html>

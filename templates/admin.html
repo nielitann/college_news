@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Общие стили */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 80px auto 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+
+        /* Темная тема */
+        .dark-theme {
+            background-color: #222;
+            color: #f4f4f4;
+        }
+
+        .dark-theme .admin-container {
+            background-color: #333;
+            border: 1px solid #444;
+        }
+
+        /* Кнопки */
+        .blue-btn, .red-btn, .green-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+
+        .blue-btn {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .red-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .green-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        /* Анимация при наведении */
+        .blue-btn::after, .red-btn::after, .green-btn::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -2px;
+            height: 2px;
+            background-color: currentColor;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .blue-btn:hover::after, .red-btn:hover::after, .green-btn:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* Кнопки в шапке */
+        .header-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .news-list {
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--background-light);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .news-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid var(--primary-blue);
+            border-radius: 4px;
+            transition: all 0.3s;
+            background: var(--background-light);
+        }
+
+        /* Темная тема для новостей */
+        .dark-theme .news-list,
+        .dark-theme .news-item {
+            background: #333;
+            border-color: #444;
+            color: #f4f4f4;
+        }
+
+        .dark-theme .news-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .preview-item {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border: 2px dashed var(--primary-blue);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .preview-item img,
+        .preview-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            display: block;
+            animation: fadeInOut 4s;
+        }
+
+        .notification.success {
+            background: #28a745;
+            color: white;
+        }
+
+        .notification.error {
+            background: #dc3545;
+            color: white;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            10%, 90% { opacity: 1; }
+        }
+        
+        /* Стили для кнопок в контейнере */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 800px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            position: relative;
+        }
+        
+        .dark-theme .modal-content {
+            background-color: #333;
+            color: #f4f4f4;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .dark-theme .close-modal {
+            color: #aaa;
+        }
+        
+        .close-modal:hover {
+            color: #333;
+        }
+        
+        .dark-theme .close-modal:hover {
+            color: #fff;
+        }
+        
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+        }
+        
+        .search-bar input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .dark-theme .search-bar input {
+            background-color: #444;
+            color: #fff;
+            border-color: #555;
+        }
+        
+        .modal-news-list {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        .modal-news-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .dark-theme .modal-news-item {
+            border-color: #555;
+        }
+        
+        .modal-news-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .dark-theme .modal-news-item:hover {
+            background-color: #444;
+        }
+        
+        .modal-news-item h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+        
+        .modal-news-item p {
+            margin: 0;
+            color: #666;
+        }
+        
+        .dark-theme .modal-news-item p {
+            color: #bbb;
+        }
+        
+        .draft-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .dark-theme .draft-item {
+            border-color: #555;
+            background-color: #3a3a3a;
+        }
+        
+        .draft-item:hover {
+            background-color: #e9ecef;
+        }
+        
+        .dark-theme .draft-item:hover {
+            background-color: #444;
+        }
+        
+        .draft-date {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .dark-theme .draft-date {
+            color: #aaa;
+        }
+        
+        .draft-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .draft-preview-item {
+            width: 50px;
+            height: 50px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .draft-preview-item img, 
+        .draft-preview-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .empty-drafts {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+        
+        .dark-theme .empty-drafts {
+            color: #aaa;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            background: white;
+            color: #333;
+        }
+
+        .dark-theme .input-group select {
+            background: #444;
+            color: #f4f4f4;
+            border-color: #555;
+        }
+
+        .events-form {
+            margin-top: 40px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .dark-theme .events-form {
+            background: #333;
+        }
+        
+        .featured-controls {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .dark-theme .featured-controls {
+            background: #333;
+        }
+        
+        .featured-controls label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <div class="header-controls">
+        <button class="green-btn" onclick="goToHome()">На главную</button>
+        <button class="red-btn" onclick="logout()">Выйти</button>
+        <button class="theme-toggle blue-btn" id="themeToggle">Сменить тему</button>
+    </div>
+    
+    <div id="notification" class="notification"></div>
+
+    <!-- Модальное окно для удаления новостей -->
+    <div id="deleteNewsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2>Удаление новостей</h2>
+            
+            <div class="search-bar">
+                <input type="text" id="newsSearch" placeholder="Поиск по заголовку..." oninput="filterNews()">
+            </div>
+            
+            <div class="modal-news-list" id="modalNewsContainer">
+                <!-- Список новостей будет загружен сюда -->
+            </div>
+            
+            <div id="deleteConfirmation" class="delete-confirmation">
+                <h3>Подтверждение удаления</h3>
+                <p>Вы действительно хотите удалить новость "<span id="confirmationTitle"></span>"?</p>
+                <div class="confirmation-buttons">
+                    <button class="red-btn" onclick="confirmDelete()">Удалить</button>
+                    <button class="blue-btn" onclick="cancelDelete()">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для черновиков -->
+    <div id="draftsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeDraftsModal()">&times;</span>
+            <h2>Черновики новостей</h2>
+            
+            <div class="modal-news-list" id="draftsContainer">
+                <!-- Список черновиков будет загружен сюда -->
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-container">
+        <h1>Добавить новость</h1>
+        <!-- Поле для новости -->
+        <div class="input-group">
+            <input type="text" id="news-title" placeholder="Заголовок новости" required>
+            <textarea id="news-content" placeholder="Текст новости..."></textarea>
+            <button onclick="checkSpelling()" class="blue-btn">Исправить ошибки</button>
+            <input type="text" id="hashtags" placeholder="#новость #колледж">
+            
+            <label for="news-category">Категория:</label>
+            <select id="news-category" required>
+                <option value="general">Общие</option>
+                <option value="academic">Академические</option>
+                <option value="student_life">Студенческая жизнь</option>
+                <option value="sport">Спорт</option>
+                <option value="culture">Культура</option>
+                <option value="research">Исследования</option>
+                <option value="announcements">Объявления</option>
+            </select>
+        </div>
+        
+        <div class="featured-controls">
+            <h3>Особые параметры:</h3>
+            <label>
+                <input type="checkbox" id="is-featured">
+                Сделать важным событием (отобразится в герое на главной)
+            </label>
+            <label>
+                <input type="checkbox" id="is-popular">
+                Сделать популярной новостью (отобразится в боковой панели)
+            </label>
+        </div>
+        
+        <div class="gallery" id="mediaPreview"></div>
+
+        <div class="media-section">
+            <div class="upload-group">
+                <h3>Фотографии</h3>
+                <input type="file" id="image-upload" accept="image/*" multiple hidden>
+                <div class="gallery" id="image-gallery"></div>
+                <button onclick="document.getElementById('image-upload').click()" class="blue-btn">
+                    Загрузить фото
+                </button>
+            </div>
+
+            <div class="upload-group">
+                <h3>Видео</h3>
+                <input type="file" id="video-upload" accept="video/*" multiple hidden>
+                <div class="gallery" id="video-gallery"></div>
+                <button onclick="document.getElementById('video-upload').click()" class="blue-btn">
+                    Загрузить видео
+                </button>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="blue-btn" onclick="publishNews()">Опубликовать</button>
+            <button class="blue-btn" onclick="saveDraft()">Сохранить черновик</button>
+            <button class="blue-btn" onclick="openDeleteModal()">Удалить новость</button>
+            <button class="blue-btn" onclick="openDraftsModal()">Просмотр черновиков</button>
+            <button class="red-btn" onclick="clearForm()">Очистить</button>
+        </div>
+    </div>
+    
+    <div class="admin-container events-form">
+        <h1>Добавить мероприятие</h1>
+        <div class="input-group">
+            <input type="text" id="event-title" placeholder="Название мероприятия" required>
+            <textarea id="event-description" placeholder="Описание мероприятия..."></textarea>
+            <input type="date" id="event-date" required>
+            <input type="text" id="event-location" placeholder="Место проведения" required>
+            <button class="green-btn" onclick="addEvent()">Добавить мероприятие</button>
+        </div>
+    </div>
+
+    <div class="news-list">
+        <h2>Опубликованные новости</h2>
+        <div id="newsContainer"></div>
+    </div>
+    <script>
+        // Глобальные переменные
+        let newsData = {
+            title: '',
+            content: '',
+            hashtags: [],
+            media: [],
+            category: 'general',
+            is_featured: false,
+            is_popular: false
+        };
+        
+        let selectedNewsId = null;
+        let allNews = [];
+        let currentDraftId = null;
+
+        // Функции для черновиков
+        function openDraftsModal() {
+            document.getElementById('draftsModal').style.display = 'block';
+            loadDrafts();
+        }
+        
+        function closeDraftsModal() {
+            document.getElementById('draftsModal').style.display = 'none';
+        }
+        
+        function loadDrafts() {
+            const drafts = JSON.parse(localStorage.getItem('drafts')) || [];
+            const container = document.getElementById('draftsContainer');
+            container.innerHTML = '';
+            
+            if (drafts.length === 0) {
+                container.innerHTML = '<div class="empty-drafts">Нет сохраненных черновиков</div>';
+                return;
+            }
+            
+            // Сортируем черновики по дате (новые сверху)
+            drafts.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            drafts.forEach(draft => {
+                const draftElement = document.createElement('div');
+                draftElement.className = 'draft-item';
+                draftElement.dataset.id = draft.id;
+                draftElement.innerHTML = `
+                    <h3>${draft.title || 'Без названия'}</h3>
+                    <p>${draft.content ? draft.content.substring(0, 150) + (draft.content.length > 150 ? '...' : '') : 'Нет текста'}</p>
+                    <div class="draft-date">Сохранено: ${new Date(draft.date).toLocaleDateString()}</div>
+                `;
+                
+                // Добавляем превью медиа, если есть
+                if (draft.media && draft.media.length > 0) {
+                    const previewContainer = document.createElement('div');
+                    previewContainer.className = 'draft-preview';
+                    
+                    draft.media.slice(0, 4).forEach(media => {
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'draft-preview-item';
+                        
+                        if (media.type === 'image') {
+                            previewItem.innerHTML = `<img src="${media.url}" alt="Превью">`;
+                        } else if (media.type === 'video') {
+                            previewItem.innerHTML = `<video src="${media.url}" muted></video>`;
+                        }
+                        
+                        previewContainer.appendChild(previewItem);
+                    });
+                    
+                    draftElement.appendChild(previewContainer);
+                }
+                
+                draftElement.addEventListener('click', () => {
+                    loadDraftToForm(draft.id);
+                });
+                
+                container.appendChild(draftElement);
+            });
+        }
+        
+        function saveDraft() {
+            const title = document.getElementById('news-title').value;
+            const content = document.getElementById('news-content').value;
+            const hashtags = document.getElementById('hashtags').value;
+            const category = document.getElementById('news-category').value;
+            const isFeatured = document.getElementById('is-featured').checked;
+            const isPopular = document.getElementById('is-popular').checked;
+            
+            // Проверяем, есть ли данные для сохранения
+            if (!title && !content && newsData.media.length === 0) {
+                showNotification('Нет данных для сохранения в черновик', 'error');
+                return;
+            }
+            
+            // Создаем объект черновика
+            const draft = {
+                id: Date.now(), // Используем timestamp как ID
+                title,
+                content,
+                hashtags,
+                category,
+                is_featured: isFeatured,
+                is_popular: isPopular,
+                media: newsData.media.map(media => ({
+                    type: media.type,
+                    url: media.url
+                })),
+                date: new Date().toISOString()
+            };
+            
+            // Получаем текущие черновики
+            let drafts = JSON.parse(localStorage.getItem('drafts')) || [];
+            
+            // Если это обновление существующего черновика
+            if (currentDraftId) {
+                const index = drafts.findIndex(d => d.id === currentDraftId);
+                if (index !== -1) {
+                    drafts[index] = draft;
+                }
+            } else {
+                // Добавляем новый черновик
+                drafts.push(draft);
+            }
+            
+            // Сохраняем в localStorage
+            localStorage.setItem('drafts', JSON.stringify(drafts));
+            
+            // Очищаем форму
+            clearForm();
+            
+            // Сбрасываем текущий черновик
+            currentDraftId = null;
+            
+            showNotification('Черновик сохранен!', 'success');
+        }
+        
+        function loadDraftToForm(draftId) {
+            const drafts = JSON.parse(localStorage.getItem('drafts')) || [];
+            const draft = drafts.find(d => d.id === draftId);
+            
+            if (!draft) {
+                showNotification('Черновик не найден', 'error');
+                return;
+            }
+            
+            // Заполняем текстовые поля
+            document.getElementById('news-title').value = draft.title || '';
+            document.getElementById('news-content').value = draft.content || '';
+            document.getElementById('hashtags').value = draft.hashtags || '';
+            document.getElementById('news-category').value = draft.category || 'general';
+            document.getElementById('is-featured').checked = draft.is_featured || false;
+            document.getElementById('is-popular').checked = draft.is_popular || false;
+            
+            // Очищаем текущие превью
+            const mediaPreview = document.getElementById('mediaPreview');
+            mediaPreview.innerHTML = '';
+            
+            // Заполняем превью медиа
+            if (draft.media && draft.media.length > 0) {
+                draft.media.forEach(media => {
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'preview-item';
+                    
+                    if (media.type === 'image') {
+                        previewItem.innerHTML = `<img src="${media.url}" alt="Превью">`;
+                    } else if (media.type === 'video') {
+                        previewItem.innerHTML = `<video src="${media.url}" controls></video>`;
+                    }
+                    
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-btn';
+                    removeBtn.innerHTML = '×';
+                    removeBtn.onclick = () => {
+                        previewItem.remove();
+                        newsData.media = newsData.media.filter(m => m.url !== media.url);
+                    };
+                    
+                    previewItem.appendChild(removeBtn);
+                    mediaPreview.appendChild(previewItem);
+                });
+            }
+            
+            // Обновляем newsData
+            newsData = {
+                title: draft.title,
+                content: draft.content,
+                hashtags: draft.hashtags,
+                category: draft.category,
+                is_featured: draft.is_featured,
+                is_popular: draft.is_popular,
+                media: draft.media.map(media => ({
+                    type: media.type,
+                    url: media.url,
+                }))
+            };
+            
+            // Устанавливаем текущий черновик
+            currentDraftId = draft.id;
+            
+            // Закрываем модальное окно
+            closeDraftsModal();
+            
+            showNotification('Черновик загружен', 'success');
+        }
+        
+        // Функции для новых кнопок
+        function goToHome() {
+            window.location.href = '/';
+        }
+        
+        async function logout() {
+            try {
+                const response = await fetch('/logout');
+                if (response.ok) {
+                    window.location.href = '/login';
+                } else {
+                    showNotification('Ошибка выхода', 'error');
+                }
+            } catch (error) {
+                showNotification('Ошибка сети: ' + error.message, 'error');
+            }
+        }
+        
+        // Функция очистки формы
+        function clearForm() {
+            // Очистка текстовых полей
+            document.getElementById('news-title').value = '';
+            document.getElementById('news-content').value = '';
+            document.getElementById('hashtags').value = '';
+            document.getElementById('news-category').value = 'general';
+            document.getElementById('is-featured').checked = false;
+            document.getElementById('is-popular').checked = false;
+            
+            // Очистка превью медиа
+            const mediaPreview = document.getElementById('mediaPreview');
+            mediaPreview.innerHTML = '';
+            
+            // Очистка галерей
+            document.getElementById('image-gallery').innerHTML = '';
+            document.getElementById('video-gallery').innerHTML = '';
+            
+            // Сброс объектов загрузки файлов
+            document.getElementById('image-upload').value = '';
+            document.getElementById('video-upload').value = '';
+            
+            // Очистка данных новости
+            newsData = {
+                title: '',
+                content: '',
+                hashtags: [],
+                media: [],
+                category: 'general',
+                is_featured: false,
+                is_popular: false
+            };
+            
+            // Сбрасываем текущий черновик
+            currentDraftId = null;
+            
+            showNotification('Форма очищена', 'success');
+        }
+
+        // Функции для работы с модальным окном удаления
+        function openDeleteModal() {
+            document.getElementById('deleteNewsModal').style.display = 'block';
+            loadNewsForDeletion();
+        }
+        
+        function closeModal() {
+            document.getElementById('deleteNewsModal').style.display = 'none';
+            document.getElementById('deleteConfirmation').style.display = 'none';
+        }
+        
+        // Закрытие модального окна при клике вне его области
+        window.onclick = function(event) {
+            const modal = document.getElementById('deleteNewsModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+            
+            const draftsModal = document.getElementById('draftsModal');
+            if (event.target === draftsModal) {
+                closeDraftsModal();
+            }
+        }
+        
+        async function loadNewsForDeletion() {
+            try {
+                const response = await fetch('/api/get_all_news');
+                
+                if (!response.ok) {
+                    throw new Error(`Ошибка загрузки: ${response.status}`);
+                }
+
+                allNews = await response.json();
+                
+                if (!Array.isArray(allNews)) {
+                    throw new Error("Ожидался массив новостей");
+                }
+
+                renderNewsList(allNews);
+                
+            } catch (error) {
+                showNotification(error.message, 'error');
+                console.error("Ошибка загрузки новостей:", error);
+            }
+        }
+        
+        function renderNewsList(newsList) {
+            const container = document.getElementById('modalNewsContainer');
+            container.innerHTML = '';
+            
+            if (newsList.length === 0) {
+                container.innerHTML = '<p>Новостей не найдено</p>';
+                return;
+            }
+            
+            newsList.forEach(item => {
+                const newsItem = document.createElement('div');
+                newsItem.className = 'modal-news-item';
+                newsItem.dataset.id = item.id;
+                
+                let badges = '';
+                if (item.is_featured) badges += '<span class="featured-badge">Важное</span> ';
+                if (item.is_popular) badges += '<span class="popular-badge">Популярное</span>';
+                
+                newsItem.innerHTML = `
+                    <h3>${item.title}</h3>
+                    <p>${item.content.substring(0, 100)}${item.content.length > 100 ? '...' : ''}</p>
+                    <small>${item.created_at} ${badges}</small>
+                `;
+                
+                newsItem.addEventListener('click', () => {
+                    showDeleteConfirmation(item.id, item.title);
+                });
+                
+                container.appendChild(newsItem);
+            });
+        }
+        
+        function filterNews() {
+            const searchTerm = document.getElementById('newsSearch').value.toLowerCase();
+            const filteredNews = allNews.filter(item => 
+                item.title.toLowerCase().includes(searchTerm)
+            );
+            renderNewsList(filteredNews);
+        }
+        
+        function showDeleteConfirmation(newsId, title) {
+            selectedNewsId = newsId;
+            document.getElementById('confirmationTitle').textContent = title;
+            document.getElementById('deleteConfirmation').style.display = 'block';
+            
+            // Прокрутка к элементу подтверждения
+            document.getElementById('deleteConfirmation').scrollIntoView({behavior: 'smooth'});
+        }
+        
+        function cancelDelete() {
+            document.getElementById('deleteConfirmation').style.display = 'none';
+            selectedNewsId = null;
+        }
+        
+        async function confirmDelete() {
+            if (!selectedNewsId) return;
+            
+            try {
+                const response = await fetch(`/api/delete_news/${selectedNewsId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    showNotification('Новость успешно удалена!', 'success');
+                    
+                    // Обновляем списки
+                    loadNewsForDeletion(); // Обновляем список в модальном окне
+                    loadNews(); // Обновляем основной список на странице
+                    
+                    // Скрываем подтверждение
+                    cancelDelete();
+                } else {
+                    const error = await response.json();
+                    showNotification(error.message || 'Ошибка при удалении', 'error');
+                }
+            } catch (error) {
+                showNotification('Ошибка сети: ' + error.message, 'error');
+            }
+        }
+
+        // Основная функция загрузки новостей
+        async function loadNews() {
+            try {
+                const response = await fetch('/api/get_all_news');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (!Array.isArray(data)) {
+                    throw new Error("Ожидался массив новостей");
+                }
+
+                const container = document.getElementById('newsContainer');
+                container.innerHTML = '';
+                
+                data.forEach(item => {
+                    const newsItem = document.createElement('div');
+                    newsItem.className = 'news-item';
+                    
+                    let badges = '';
+                    if (item.is_featured) badges += '<span class="featured-badge">★ Важное событие</span> ';
+                    if (item.is_popular) badges += '<span class="popular-badge">🔥 Популярное</span>';
+                    
+                    newsItem.innerHTML = `
+                        <div>
+                            <h3>${item.title}</h3>
+                            <p>${item.content}</p>
+                            <div>Категория: ${getCategoryName(item.category)} ${badges}</div>
+                            <small>${item.created_at}</small>
+                        </div>
+                        <button class="red-btn" onclick="deleteNewsFromList(${item.id})">Удалить</button>
+                    `;
+                    container.appendChild(newsItem);
+                });
+
+            } catch (error) {
+                showNotification(error.message, 'error');
+                console.error("Ошибка загрузки новостей:", error);
+            }
+        }
+
+        // Удаление новости из основного списка
+        async function deleteNewsFromList(newsId) {
+            if (!confirm('Удалить новость?')) return;
+
+            try {
+                const response = await fetch(`/api/delete_news/${newsId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    showNotification('Новость удалена!', 'success');
+                    loadNews();
+                } else {
+                    const error = await response.json();
+                    showNotification(error.message || 'Ошибка удаления', 'error');
+                }
+            } catch (error) {
+                showNotification('Ошибка сети: ' + error.message, 'error');
+            }
+        }
+
+        // Загружаем новости при открытии страницы
+        loadNews();
+        
+        // Обработчик для кнопки смены темы
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            
+            // Сохранение темы в localStorage
+            const theme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+        });
+
+        // Восстановление темы при загрузке
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+
+        // Обработчики загрузки файлов
+        document.getElementById('image-upload').addEventListener('change', handleMediaUpload);
+        document.getElementById('video-upload').addEventListener('change', handleMediaUpload);
+
+        function handleMediaUpload(e) {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const previewItem = createPreviewItem(file, event.target.result);
+                    document.getElementById('mediaPreview').appendChild(previewItem);
+                    newsData.media.push({
+                        type: file.type.split('/')[0],
+                        url: event.target.result,
+                        file: file
+                    });
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function createPreviewItem(file, url) {
+            const container = document.createElement('div');
+            container.className = 'preview-item';
+            
+            const mediaElement = file.type.startsWith('image') 
+                ? document.createElement('img') 
+                : document.createElement('video');
+            mediaElement.src = url;
+            mediaElement.controls = true;
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-btn';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = () => removeMediaItem(container, url);
+
+            container.appendChild(mediaElement);
+            container.appendChild(removeBtn);
+            return container;
+        }
+
+        function removeMediaItem(element, url) {
+            element.remove();
+            newsData.media = newsData.media.filter(item => item.url !== url);
+        }
+
+        // Функции публикации и сохранения
+        async function publishNews() {
+            const title = document.getElementById('news-title').value;
+            const content = document.getElementById('news-content').value;
+            const hashtags = document.getElementById('hashtags').value;
+            const category = document.getElementById('news-category').value;
+            const isFeatured = document.getElementById('is-featured').checked;
+            const isPopular = document.getElementById('is-popular').checked;
+
+            // Валидация
+            if (!title || !content) {
+                showNotification('Заполните все обязательные поля!', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('content', content);
+            formData.append('hashtags', hashtags);
+            formData.append('category', category);
+            formData.append('is_featured', isFeatured);
+            formData.append('is_popular', isPopular);
+
+            // Добавление медиафайлов
+            newsData.media.forEach(media => {
+                if (media.file) {
+                    formData.append('media', media.file);
+                }
+            });
+
+            try {
+                const response = await fetch('/api/publish_news', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    showNotification('Новость опубликована!', 'success');
+                    
+                    // Удаляем текущий черновик, если он есть
+                    if (currentDraftId) {
+                        const drafts = JSON.parse(localStorage.getItem('drafts')) || [];
+                        const updatedDrafts = drafts.filter(d => d.id !== currentDraftId);
+                        localStorage.setItem('drafts', JSON.stringify(updatedDrafts));
+                        currentDraftId = null;
+                    }
+                    
+                    clearForm();
+                    loadNews(); // Обновление списка новостей
+                } else {
+                    showNotification(result.error || 'Ошибка', 'error');
+                }
+            } catch (error) {
+                showNotification('Сервер не отвечает', 'error');
+            }
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.className = `notification ${type} show`;
+            notification.textContent = message;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+        
+        async function checkSpelling() {
+            const title = document.getElementById('news-title').value;
+            const content = document.getElementById('news-content').value;
+            
+            if (!title && !content) {
+                showNotification('Введите текст для проверки', 'error');
+                return;
+            }
+
+            try {
+                // Объединяем заголовок и содержание для проверки
+                const textToCheck = `${title}\n\n${content}`;
+                
+                // Отправляем запрос к API Яндекс.Спеллера
+                const response = await fetch('https://speller.yandex.net/services/spellservice.json/checkText', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        text: textToCheck,
+                        lang: 'ru',
+                        options: '518' // 512 (IGNORE_UPPERCASE) + 4 (IGNORE_DIGITS) + 2 (IGNORE_URLS)
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Ошибка сервера при проверке орфографии');
+                }
+
+                const errors = await response.json();
+                
+                if (errors.length === 0) {
+                    showNotification('Ошибок не найдено!', 'success');
+                    return;
+                }
+
+                // Применяем исправления
+                let correctedText = textToCheck;
+                let offset = 0;
+                
+                // Сортируем ошибки по позиции для последовательной замены
+                errors.sort((a, b) => a.pos - b.pos);
+                
+                for (const error of errors) {
+                    const start = error.pos + offset;
+                    const end = start + error.len;
+                    
+                    // Берем первое предложенное исправление
+                    const correction = error.s[0] || error.word;
+                    
+                    // Заменяем слово с ошибкой
+                    correctedText = correctedText.substring(0, start) + 
+                                   correction + 
+                                   correctedText.substring(end);
+                    
+                    // Корректируем смещение для следующих замен
+                    offset += correction.length - error.len;
+                }
+
+                // Разделяем исправленный текст обратно на заголовок и содержание
+                const [correctedTitle, ...contentParts] = correctedText.split('\n\n');
+                const correctedContent = contentParts.join('\n\n');
+                
+                // Обновляем поля формы
+                document.getElementById('news-title').value = correctedTitle;
+                document.getElementById('news-content').value = correctedContent;
+                
+                showNotification(`Исправлено ${errors.length} ошибок`, 'success');
+                
+            } catch (error) {
+                console.error('Spell check error:', error);
+                showNotification('Ошибка при проверке орфографии: ' + error.message, 'error');
+            }
+        }
+
+        // Функция добавления мероприятия
+        async function addEvent() {
+            const title = document.getElementById('event-title').value;
+            const description = document.getElementById('event-description').value;
+            const date = document.getElementById('event-date').value;
+            const location = document.getElementById('event-location').value;
+
+            if (!title || !description || !date || !location) {
+                showNotification('Заполните все поля!', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/add_event', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title,
+                        description,
+                        date,
+                        location
+                    })
+                });
+
+                if (response.ok) {
+                    showNotification('Мероприятие добавлено!', 'success');
+                    // Очищаем форму
+                    document.getElementById('event-title').value = '';
+                    document.getElementById('event-description').value = '';
+                    document.getElementById('event-date').value = '';
+                    document.getElementById('event-location').value = '';
+                } else {
+                    const error = await response.json();
+                    showNotification(error.error || 'Ошибка', 'error');
+                }
+            } catch (error) {
+                showNotification('Сервер не отвечает', 'error');
+            }
+        }
+
+        // Функция для получения названия категории
+        function getCategoryName(category) {
+            const categories = {
+                'general': 'Общие',
+                'academic': 'Академические',
+                'student_life': 'Студенческая жизнь',
+                'sport': 'Спорт',
+                'culture': 'Культура',
+                'research': 'Исследования',
+                'announcements': 'Объявления'
+            };
+            return categories[category] || category;
+        }
+    </script>
+</body>
+</html>
