@@ -7,7 +7,7 @@ load_dotenv()
 
 class Database:
     def __init__(self):
-    database_url = os.environ.get('DATABASE_URL')
+        database_url = os.environ.get('DATABASE_URL')
     if not database_url:
         raise RuntimeError("DATABASE_URL environment variable not set")
     
