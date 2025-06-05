@@ -21,8 +21,6 @@ class Database:
     def create_tables(self):
         try:
             with self.conn.cursor() as cur:
-            """Создает таблицы при инициализации"""
-            with self.conn.cursor() as cur:
                 cur.execute("""
                     CREATE TABLE IF NOT EXISTS news (
                         id SERIAL PRIMARY KEY,
