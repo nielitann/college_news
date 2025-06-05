@@ -8,22 +8,21 @@ load_dotenv()
 class Database:
     def __init__(self):
         database_url = os.environ.get('DATABASE_URL')
-    if not database_url:
-        raise RuntimeError("DATABASE_URL environment variable not set")
-    
-    try:
-        self.conn = psycopg2.connect(
-            database_url,
-            sslmode='require',
-            connect_timeout=5,
-            # Ключевое исправление:
-            options="-c search_path=public"
-        )
-        self.create_tables()
-    except psycopg2.OperationalError as e:
-        print(f"Database connection failed: {e}")
-        raise
-        self.create_tables()
+        # Fixed indentation: moved inside __init__
+        if not database_url:
+            raise RuntimeError("DATABASE_URL environment variable not set")
+        
+        try:
+            self.conn = psycopg2.connect(
+                database_url,
+                sslmode='require',
+                connect_timeout=5,
+                options="-c search_path=public"
+            )
+            self.create_tables()
+        except psycopg2.OperationalError as e:
+            print(f"Database connection failed: {e}")
+            raise  # Remove unreachable create_tables() after raise
     
     def create_tables(self):
         try:
