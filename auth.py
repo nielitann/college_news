@@ -1,17 +1,29 @@
 import bcrypt
-from config import DB_CONFIG
 import psycopg2
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class Auth:
     def __init__(self):
-        self.conn = None  # Явная инициализация соединения
-        self.init_db()    # Попытка инициализации БД
-
+        self.conn = None
+        self.init_db()
+    
     def init_db(self):
         """Инициализация таблиц и тестового администратора"""
         try:
-            # Подключение к базе данных
-            self.conn = psycopg2.connect(**DB_CONFIG, client_encoding='utf-8')
+            # Use DATABASE_URL from environment variables
+            database_url = os.environ.get('DATABASE_URL')
+            if not database_url:
+                raise RuntimeError("DATABASE_URL environment variable not set")
+            
+            self.conn = psycopg2.connect(
+                database_url,
+                sslmode='require',
+                connect_timeout=5
+            )
+            
             with self.conn.cursor() as cur:
                 # Создание таблицы users, если её нет
                 cur.execute("""
