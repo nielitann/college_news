@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-lass Database:
+class Database:
     def __init__(self):
         database_url = os.environ.get('DATABASE_URL')
         if not database_url:
