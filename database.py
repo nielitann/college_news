@@ -18,6 +18,7 @@ class Database:
             connect_timeout=5  # Таймаут подключения
         )
         self.create_tables()
+    
     def create_tables(self):
         try:
             with self.conn.cursor() as cur:
@@ -43,10 +44,11 @@ class Database:
                         location VARCHAR(255) NOT NULL
                     )
                 """)
-        self.conn.commit()
-    except Exception as e:
-        print(f"Ошибка создания таблиц: {e}")
-        self.conn.rollback()
+            self.conn.commit()
+        except Exception as e:
+            print(f"Ошибка создания таблиц: {e}")
+            self.conn.rollback()
+    
     def add_news(self, title, content, hashtags=None, category='general', 
                  is_featured=False, is_popular=False, media_urls=None):
         """Добавляет новость в базу данных"""
