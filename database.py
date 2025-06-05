@@ -5,16 +5,22 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-class Database:
+lass Database:
     def __init__(self):
         database_url = os.environ.get('DATABASE_URL')
         if not database_url:
             raise RuntimeError("DATABASE_URL environment variable not set")
         
-        self.conn = psycopg2.connect(database_url, sslmode='require')
+        # Добавьте параметры подключения явно
+        self.conn = psycopg2.connect(
+            database_url,
+            sslmode='require',
+            connect_timeout=5  # Таймаут подключения
+        )
         self.create_tables()
-
     def create_tables(self):
+    try:
+        with self.conn.cursor() as cur:
         """Создает таблицы при инициализации"""
         with self.conn.cursor() as cur:
             cur.execute("""
@@ -39,7 +45,10 @@ class Database:
                     location VARCHAR(255) NOT NULL
                 )
             """)
-            self.conn.commit()
+               self.conn.commit()
+    except Exception as e:
+        print(f"Ошибка создания таблиц: {e}")
+        self.conn.rollback()
     def add_news(self, title, content, hashtags=None, category='general', 
                  is_featured=False, is_popular=False, media_urls=None):
         """Добавляет новость в базу данных"""
