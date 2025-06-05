@@ -1,19 +1,24 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from werkzeug.utils import secure_filename
-from database import Database
 import datetime
 import os
 import uuid
-from auth import Auth 
 from dotenv import load_dotenv
+from database import Database
+from auth import Auth
 
 load_dotenv()
 
-db = Database()
+# 1. Создаем экземпляр Flask ДО использования
 app = Flask(__name__)
+
+# 2. Инициализируем зависимости ПОСЛЕ создания app
+db = Database()
 auth = Auth()
-app.secret_key = 'super-secret-key'
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+
+# 3. Теперь можно настраивать приложение
+app.secret_key = os.environ.get('SECRET_KEY', 'fallback-key')
+app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 def check_admin_session():
