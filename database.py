@@ -14,7 +14,7 @@ class Database:
         self.create_tables()
 
     def create_tables(self):
-        self._init_db()
+        self._init_()
         """Создает таблицы при инициализации"""
         with self.conn.cursor() as cur:
             # Создаем таблицу новостей
