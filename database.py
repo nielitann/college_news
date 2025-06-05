@@ -43,7 +43,7 @@ class Database:
                         location VARCHAR(255) NOT NULL
                     )
                 """)
-                   self.conn.commit()
+        self.conn.commit()
     except Exception as e:
         print(f"Ошибка создания таблиц: {e}")
         self.conn.rollback()
