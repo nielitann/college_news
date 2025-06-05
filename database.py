@@ -19,33 +19,33 @@ class Database:
         )
         self.create_tables()
     def create_tables(self):
-    try:
-        with self.conn.cursor() as cur:
-        """Создает таблицы при инициализации"""
-        with self.conn.cursor() as cur:
-            cur.execute("""
-                CREATE TABLE IF NOT EXISTS news (
-                    id SERIAL PRIMARY KEY,
-                    title VARCHAR(255) NOT NULL,
-                    content TEXT NOT NULL,
-                    hashtags VARCHAR(255),
-                    category VARCHAR(50),
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    is_featured BOOLEAN DEFAULT FALSE,
-                    is_popular BOOLEAN DEFAULT FALSE,
-                    media_urls JSONB DEFAULT '[]'::jsonb
-                )
-            """)
-            cur.execute("""
-                CREATE TABLE IF NOT EXISTS events (
-                    id SERIAL PRIMARY KEY,
-                    title VARCHAR(255) NOT NULL,
-                    description TEXT NOT NULL,
-                    date DATE NOT NULL,
-                    location VARCHAR(255) NOT NULL
-                )
-            """)
-               self.conn.commit()
+        try:
+            with self.conn.cursor() as cur:
+            """Создает таблицы при инициализации"""
+            with self.conn.cursor() as cur:
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS news (
+                        id SERIAL PRIMARY KEY,
+                        title VARCHAR(255) NOT NULL,
+                        content TEXT NOT NULL,
+                        hashtags VARCHAR(255),
+                        category VARCHAR(50),
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        is_featured BOOLEAN DEFAULT FALSE,
+                        is_popular BOOLEAN DEFAULT FALSE,
+                        media_urls JSONB DEFAULT '[]'::jsonb
+                    )
+                """)
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS events (
+                        id SERIAL PRIMARY KEY,
+                        title VARCHAR(255) NOT NULL,
+                        description TEXT NOT NULL,
+                        date DATE NOT NULL,
+                        location VARCHAR(255) NOT NULL
+                    )
+                """)
+                   self.conn.commit()
     except Exception as e:
         print(f"Ошибка создания таблиц: {e}")
         self.conn.rollback()
