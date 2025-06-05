@@ -3,6 +3,7 @@ import json
 import os
 from dotenv import load_dotenv
 
+load_dotenv()
 
 class Database:
     def __init__(self):
@@ -14,10 +15,8 @@ class Database:
         self.create_tables()
 
     def create_tables(self):
-        self.__init__()
         """Создает таблицы при инициализации"""
         with self.conn.cursor() as cur:
-            # Создаем таблицу новостей
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS news (
                     id SERIAL PRIMARY KEY,
@@ -31,8 +30,6 @@ class Database:
                     media_urls JSONB DEFAULT '[]'::jsonb
                 )
             """)
-            
-            # Создаем таблицу мероприятий
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS events (
                     id SERIAL PRIMARY KEY,
@@ -43,7 +40,6 @@ class Database:
                 )
             """)
             self.conn.commit()
-
     def add_news(self, title, content, hashtags=None, category='general', 
                  is_featured=False, is_popular=False, media_urls=None):
         """Добавляет новость в базу данных"""
