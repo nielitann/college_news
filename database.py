@@ -3,22 +3,18 @@ import json
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
-
-def get_db_connection():
-    return psycopg2.connect(os.environ['DATABASE_URL'])
 
 class Database:
     def __init__(self):
-        self.conn = psycopg2.connect(
-            host="localhost",
-            database="college_news",
-            user="postgres",
-            password="QztxViMj"
-        )
-        self._init_db()
+        database_url = os.environ.get('DATABASE_URL')
+        if not database_url:
+            raise RuntimeError("DATABASE_URL environment variable not set")
         
-    def _init_db(self):
+        self.conn = psycopg2.connect(database_url, sslmode='require')
+        self.create_tables()
+
+    def create_tables(self):
+        self._init_db():
         """Создает таблицы при инициализации"""
         with self.conn.cursor() as cur:
             # Создаем таблицу новостей
@@ -132,4 +128,5 @@ class Database:
             return None
 
     def __del__(self):
-        self.conn.close()
+        if hasattr(self, 'conn') and self.conn:
+            self.conn.close()
